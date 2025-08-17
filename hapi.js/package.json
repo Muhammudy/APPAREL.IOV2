@@ -9,6 +9,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@hapi/hapi": "^21.4.3"
+    "@hapi/bell": "^13.1.0",
+    "@hapi/cookie": "^12.0.1",
+    "@hapi/hapi": "^21.4.3",
+    "joi": "^18.0.0",
+    "mongoose": "^8.17.1"
   }
 }

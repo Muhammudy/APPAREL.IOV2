@@ -2,9 +2,12 @@ const Hapi = require('@hapi/hapi');
 
 const main = require('./routes/main');
 
+const connectDB = require('./config/db');
+
 
 
 const init = async () => {
+    connectDB(); // Connect to the database first
 
 
     const server = Hapi.server ({
