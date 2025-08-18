@@ -2,6 +2,7 @@ const Hapi = require('@hapi/hapi');
 const Bell = require('@hapi/bell');
 
 const main = require('./routes/main');
+const oAuth2Routes = require('./routes/oAuth2Routes');
 
 const connectDB = require('./config/db');
 const {registerOAuth} = require('./auth/auth');
@@ -18,8 +19,9 @@ const init = async () => {
     });
 
     await server.start();
+    await registerOAuth(server);
     server.route(main);
-    registerOAuth(server);
+    server.route(oAuth2Routes)
 
     console.log(`Server running at: ${server.info.uri}`);
 
