@@ -4,14 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Github } from "lucide-react";
-import { Form } from "react-router-dom";
-import {Link } from "react-router-dom";
+import { Form, Navigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
+
+import { Link } from 'react-router-dom'; 
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import apiClient from "@/api/apiClient";
-
 
 const handleSocialLogin = (provider) => {
 
@@ -28,7 +29,7 @@ const handleSocialLogin = (provider) => {
 };
 
 
-function Login() {
+function SignUp() {
   return (
     <div
       className="flex min-h-screen"
@@ -55,11 +56,8 @@ function Login() {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Welcome Back
+                Create your account
               </CardTitle>
-              <CardDescription style={{ color: "var(--color-muted-foreground)" }}>
-                Sign in to your account to continue
-              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Social Login Buttons */}
@@ -123,8 +121,8 @@ function Login() {
               {/* Email/Password Form */}
               <Form method = "POST" className="space-y-4">
                 <Input
-                name = "email"
-                  id = "email"
+                  id="email"
+                  name="email"
                   type="email"
                   placeholder="Enter your email"
                   className="h-12"
@@ -136,8 +134,9 @@ function Login() {
                   required
                 />
                 <Input
-                name = "password"
-                  id = "password"
+
+                  id="password"
+                  name="password"
                   type="password"
                   placeholder="Enter your password"
                   className="h-12"
@@ -147,17 +146,12 @@ function Login() {
                     borderColor: "var(--color-border)",
                   }}
                   required
-                  minLength={4}
-                  maxLength={20}
                 />
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input type="checkbox" style={{ accentColor: "var(--color-primary)" }} />
                     <span style={{ color: "var(--color-muted-foreground)" }}>Remember me</span>
                   </label>
-                  <a href="#" style={{ color: "var(--color-primary)" }}>
-                    Forgot password?
-                  </a>
                 </div>
                 <Button
                   type="submit"
@@ -165,15 +159,16 @@ function Login() {
                   className="w-full h-12 font-semibold"
                   style={{ backgroundColor: "var(--color-primary)", color: "var(--color-primary-foreground)" }}
                 >
-                  Sign In
+                  Sign Up
                 </Button>
               </Form>
 
               <div className="text-center text-sm" style={{ color: "var(--color-muted-foreground)" }}>
-                Don't have an account?{" "}
-                <Link className = "underline"to = '/signup' style={{ color: "var(--color-primary)"}}>
-                Create your account 
-                </Link>               
+                Already have an account? {" "}
+                <Link to = '/login' className = "underline" style={ {color : "var(--color-primary)"}}>
+                Log in
+
+                </Link>
               </div>
             </CardContent>
           </Card>
@@ -187,37 +182,32 @@ function Login() {
 }
 
 
-export async function loginAction({request}){
-  const data = await request.formData();
-  const loginData = {
-    email : data.get('email'),
-    password: data.get('password'),
-  };
-  try{
-    const response = await apiClient.post('auth/login', loginData);
-    const {message , token, success} = response.data;
-    console.log("Login succesful:", message);
+export async function signUpAction({request}) {
+    const data = await request.formData();
+    const signUpData = {
+        email : data.get('email'),
+        password : data.get('password'),
+    }
+    try {
+        const response = await apiClient.post('/auth/signup', signUpData);
+        const {message} = response.data;
+        console.log("Sign up successful:", message);
+        //add a toast or a message here or some information to the user 
 
-    //maybe we save the jwt token
-    //add some toast functionality the user is able to see
-    return redirect('/dashboard');
+    }
 
+    catch (error) {
+        const message =
+          error.response?.data?.message ||
+          "Failed to signup. Please try again later";
 
-  }
-  catch(error){
-      console.error("Login failed:", error);
-
-    if (error.response) {
-      // Backend responded with a non-2xx status
-      const { message } = error.response.data;
-    } 
-
-    // Stay on the login page
-    return null;
-  
+        throw new Response(JSON.stringify({ message }), {
+          status: error.response?.status || 500,
+        });
+      }
 
 
-  }
-}
+    }
 
-export default Login;
+
+export default SignUp;

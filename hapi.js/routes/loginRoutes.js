@@ -1,8 +1,9 @@
 const User = require('../models/Users');
 const Hapi = require('@hapi/hapi');
 const jwtToken = require('jsonwebtoken');
+const bCrypt = require('bcrypt');
 
-module.exports = {
+module.exports = [{
     method: ['GET', 'POST'],
     path: '/login/oauth2/google',
     options: {
@@ -51,7 +52,7 @@ module.exports = {
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
             console.log("User authenticated successfully");
 
-            return reply.response({ message: 'Login successful', token, user: payload }).code(200);
+            return reply.redirect(`http://localhost:5173/oauth/callback?token=${token}`);
 
             }
             catch (error){
@@ -65,4 +66,50 @@ module.exports = {
 
         }
     }
-};
+}, {
+    method : ['GET', 'POST'],
+    path : '/auth/login',
+    handler : async function (request, reply){
+        const {email, password} = request.payload; //maybe add some validation here
+        if (!email || !password){
+            return reply.response({message : "Email and Password are required", success : false}).code(400);
+        }
+        try{
+            let user = await User.findOne({email : email});
+            if (!user){
+                console.error("User not found");
+                return reply.response({message: "User not found", success: false}).code(404);
+            }
+            else{ //check if the password matches
+                const isMatch = await bCrypt.compare(password, user.password);
+                if (!isMatch){
+                    console.error("Invalid password");
+                    return reply.response({message : "Invalid password", success: false}).code(401);
+                }
+                else{
+                    console.log("User authenticated successfully");
+                    const payload = {
+                            id: user._id,
+                            name: user.user,
+                            email: user.email,
+                            oauthProvider: user.oauthProvider,
+                            oauthID: user.oauthID
+                        };
+                    const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+                    console.log("User authenticated successfully");
+                    return reply.response({message : "User authenticated successfully", success: true, token}).code(200);
+
+                }
+            }
+
+        }
+
+        catch (error) {
+            console.error("Error during login:", error);
+            return reply.response({ message: "An error occurred during login", success: false }).code(500);
+        }
+    }
+
+
+
+}]
