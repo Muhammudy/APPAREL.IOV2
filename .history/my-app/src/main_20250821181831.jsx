@@ -32,7 +32,7 @@ createRoot(document.getElementById('root')).render(
     
     <RouterProvider router = {routerDefinitions}/>
     <Toaster
-      position="top-center"
+      position="top-right"
       expand={true}
       richColors
     />

@@ -20,6 +20,7 @@ const routerDefinitions = createBrowserRouter(
       <Route path="/login" element={<Login />} action = {loginAction}/>
       <Route path = "/oauth/callback" element = { <OAuthCallback/>} />
       <Route path = '/signup' element = { < SignUp/>} action = {signUpAction}/>
+      <Route path = '/toast-test' element = { <ToastTest/>} />
       {/* <Route path = '/dashboard' element = { <Dashboard />} action = {dashboardAction} /> */}
 
     </>
@@ -32,7 +33,7 @@ createRoot(document.getElementById('root')).render(
     
     <RouterProvider router = {routerDefinitions}/>
     <Toaster
-      position="top-center"
+      position="top-right"
       expand={true}
       richColors
     />

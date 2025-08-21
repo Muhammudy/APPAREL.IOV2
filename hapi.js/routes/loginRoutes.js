@@ -24,23 +24,28 @@ module.exports = [{
                 const profile = request.auth.credentials.profile;
 
             // Check if user exists
-            let user = await User.findOne({ oauthID: profile.id });
-            console.log(profile.email);
+            let user = await User.findOne({ email : profile.email });
 
             // Create new user if not found
             if (!user) {
                 user = await new User({
                     user: profile.displayName,
                     email: profile.email,
-                    oauthProvider: profile.provider,
+                    oauthProvider: 'google',
                     oauthID: profile.id,
                     password: null
                 }).save();
 
                 console.log("New user created");
             }
+            else if (user.oauthProvider != 'google'){ //throw an error because there already exists a user with the same email
+                console.log("User already exists with that email");
+                return reply.redirect(`${process.env.FRONT_END_BASE_URL}/login?error=account_exists&provider=${user.oauthProvider}`);
 
-            // JWT payload
+
+            }
+
+            // JWT payload  
             const payload = {
                 id: user._id,
                 name: user.user,
@@ -52,7 +57,7 @@ module.exports = [{
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
             console.log("User authenticated successfully");
 
-            return reply.redirect(`http://localhost:5173/oauth/callback?token=${token}`);
+            return reply.redirect(`${process.env.FRONT_END_BASE_URL}/oauth/callback?token=${token}`);
 
             }
             catch (error){
@@ -118,36 +123,48 @@ module.exports = [{
 
 },
 {
-    method : ['GET', 'POST'],
+    method: ['GET', 'POST'],
     path : '/login/oauth2/discord',
-
-    options: {
+    options : {
         auth: 'discord',
-        handler : async function(request, reply) {
-        if(!request.auth.isAuthenticated){
-            return reply.response({
+        handler : async function (request, reply) {
+            console.log("WITHIN DISCORD PATH");
+            if(!request.auth.isAuthenticated){
+                console.error("Authentication failed:", request.auth.error?.message);
+                return reply.response({
                     message: 'Authentication failed',
                     error: request.auth.error?.message
                 }).code(401);
-        }
-        try{
-            const profile = request.auth.credentials.profile;
 
+            }
+            try{
+            const credentials = request.auth.credentials;
+
+
+            const profile = credentials.profile;
+            console.log("Profile:", profile);
             // Check if user exists
-            let user = await User.findOne({ oauthID: profile.id });
+            let user = await User.findOne({ email : profile.email });
             console.log(profile.email);
+            console.log("user", user);
 
             // Create new user if not found
             if (!user) {
                 user = await new User({
-                    user: profile.displayName,
+                    user: profile.username,
                     email: profile.email,
-                    oauthProvider: profile.provider,
+                    oauthProvider: 'discord',
                     oauthID: profile.id,
                     password: null
                 }).save();
 
                 console.log("New user created");
+            }
+            else if (user.oauthProvider != 'discord'){ //throw an error because there already exists a user with the same email
+                console.log("User already exists with that email");
+                return reply.redirect(`${process.env.FRONT_END_BASE_URL}/login?error=account_exists&provider=${user.oauthProvider}`);
+
+
             }
 
             // JWT payload
@@ -162,7 +179,7 @@ module.exports = [{
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
             console.log("User authenticated successfully");
 
-            return reply.redirect(`http://localhost:5173/oauth/callback?token=${token}`);
+            return reply.redirect(`${process.env.FRONT_END_BASE_URL}/oauth/callback?token=${token}`); //send back the token
 
             }
             catch (error){
@@ -173,15 +190,9 @@ module.exports = [{
                 }).code(500);
             }
 
-
             
         },
-
     }
-
-
-
-
 }
 
 

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Github } from "lucide-react";
 import { Form } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { redirect } from "react-router-dom";
@@ -32,7 +31,31 @@ const handleSocialLogin = (provider) => {
 };
 
 
+
 function Login() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search); //gives the query information from the location variable
+    const error = queryParams.get('error');
+    const provider = queryParams.get('provider');
+    
+
+    useEffect(() => {
+      console.log("in the use efffect");
+      console.log("error", error);
+      console.log("provider", provider);
+      if(error === "account_exists" && provider){
+        setTimeout(() => {
+        console.log("In the if statement");
+        toast.error(`An account with this email already exists. Please sign in using your ${provider} account instead.`);
+        navigate(location.pathname, { replace: true });
+        }, 100)
+      }
+      else{
+        toast.success("working");
+      }
+  
+    }, [error, queryParams]) //fix this bit later
   return (
     <div
       className="flex min-h-screen"

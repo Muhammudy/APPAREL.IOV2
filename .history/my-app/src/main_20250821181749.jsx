@@ -10,7 +10,6 @@ import App from './App.jsx'
 import SignUp from './components/SignUp.jsx';
 import { signUpAction } from './components/SignUp.jsx';
 import { loginAction } from './components/Login.jsx';
-import ToastTest from './components/ToastTest.jsx';
 
 
 const routerDefinitions = createBrowserRouter(
@@ -33,8 +32,8 @@ createRoot(document.getElementById('root')).render(
     <RouterProvider router = {routerDefinitions}/>
     <Toaster
       position="top-center"
-      expand={true}
       richColors
+      closeButton
     />
 
 

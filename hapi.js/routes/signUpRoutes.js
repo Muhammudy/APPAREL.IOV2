@@ -3,6 +3,7 @@ const Hapi = require('@hapi/hapi');
 const jwtToken = require('jsonwebtoken');
 const bCrypt = require('bcrypt');
 const { options } = require('joi');
+require('dotenv').config();
 module.exports = [{
     method: ['GET', 'POST'],
     path: '/signup/oauth2/google',
@@ -24,7 +25,7 @@ module.exports = [{
                 const profile = request.auth.credentials.profile;
 
             // Check if user exists
-            let user = await User.findOne({ oauthID: profile.id });
+            let user = await User.findOne({ email : profile.email });
 
             // Create new user if not found
             if (!user) {
@@ -37,6 +38,12 @@ module.exports = [{
                 }).save();
 
                 console.log("New user created");
+            }
+            else if (user.oauthProvider != 'google'){ //throw an error because there already exists a user with the same email
+                console.log("User already exists with that email");
+                return reply.redirect(`${process.env.FRONT_END_BASE_URL}/login?error=account_exists&provider=${user.oauthProvider}`);
+
+
             }
 
             // JWT payload  
@@ -51,7 +58,7 @@ module.exports = [{
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
             console.log("User authenticated successfully");
 
-            return reply.redirect(`http://localhost:5173/oauth/callback?token=${token}`);
+            return reply.redirect(`${process.env.FRONT_END_BASE_URL}/oauth/callback?token=${token}`);
 
             }
             catch (error){
@@ -115,44 +122,15 @@ handler : async (request, reply) => {
 
             }
             try{
-            console.log("hello!");
             const credentials = request.auth.credentials;
-
-            // Raw object
-            console.log("=== Raw Credentials Object ===");
-            console.log(credentials);
-
-            // JSON-safe print (no circular refs)
-            console.log("=== JSON.stringify Credentials ===");
-            try {
-                console.log(JSON.stringify(credentials, null, 4));
-            } catch (err) {
-                console.error("Could not stringify credentials:", err.message);
-            }
-
-            // Show keys
-            console.log("=== Credentials Keys ===");
-            console.log(Object.keys(credentials));
-
-            // Check profile existence
-            if (credentials && credentials.profile) {
-                console.log("=== Profile Object ===");
-                console.log(credentials.profile);
-
-                console.log("Profile ID:", credentials.profile.id);
-                console.log("Profile Username:", credentials.profile.username);
-                console.log("Profile Email:", credentials.profile.email);
-            } else {
-                console.warn("⚠️ No profile object found in credentials");
-            }
-
 
 
             const profile = credentials.profile;
             console.log("Profile:", profile);
             // Check if user exists
-            let user = await User.findOne({ oauthID: profile.id });
+            let user = await User.findOne({ email : profile.email });
             console.log(profile.email);
+            console.log("user", user);
 
             // Create new user if not found
             if (!user) {
@@ -165,6 +143,12 @@ handler : async (request, reply) => {
                 }).save();
 
                 console.log("New user created");
+            }
+            else if (user.oauthProvider != 'discord'){ //throw an error because there already exists a user with the same email
+                console.log("User already exists with that email");
+                return reply.redirect(`${process.env.FRONT_END_BASE_URL}/login?error=account_exists&provider=${user.oauthProvider}`);
+
+
             }
 
             // JWT payload
@@ -179,7 +163,7 @@ handler : async (request, reply) => {
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
             console.log("User authenticated successfully");
 
-            return reply.redirect(`http://localhost:5173/oauth/callback?token=${token}`); //send back the token
+            return reply.redirect(`${process.env.FRONT_END_BASE_URL}/oauth/callback?token=${token}`); //send back the token
 
             }
             catch (error){

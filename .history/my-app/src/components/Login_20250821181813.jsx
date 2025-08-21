@@ -3,40 +3,51 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { FaDiscord } from "react-icons/fa";
-import { Form, Navigate } from "react-router-dom";
+import { Github } from "lucide-react";
+import { Form } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { redirect } from "react-router-dom";
-
-import { Link } from 'react-router-dom'; 
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import apiClient from "@/api/apiClient";
-import { toast, Toaster } from "sonner";
+
+import { toast } from "sonner";
+import { FaDiscord } from "react-icons/fa";
+
 
 const handleSocialLogin = (provider) => {
 
     let oauthUrl = '';
 
     if (provider === 'google') {
-        oauthUrl = 'http://localhost:3000/signup/oauth2/google';
+        oauthUrl = 'http://localhost:3000/login/oauth2/google';
     }
     else if (provider === 'discord') {
-        console.log('in discord path');
-        oauthUrl = 'http://localhost:3000/signup/oauth2/discord';
+        oauthUrl = 'http://localhost:3000/login/oauth2/discord';
     }
     window.location.href = oauthUrl;
 
 };
 
 
-function SignUp() {
+
+function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search); //gives the query information from the location variable
     const error = queryParams.get('error');
     const provider = queryParams.get('provider');
+    
+    // Test toast on component mount
+    useEffect(() => {
+      console.log("Component mounted - testing toast");
+      setTimeout(() => {
+        toast.info("Login component loaded");
+        console.log("Toast should have appeared");
+      }, 1000);
+    }, []);
     
 
     useEffect(() => {
@@ -44,14 +55,14 @@ function SignUp() {
       console.log("error", error);
       console.log("provider", provider);
       if(error === "account_exists" && provider){
-        setTimeout(() => {
         console.log("In the if statement");
+        console.log("About to show toast");
         toast.error(`An account with this email already exists. Please sign in using your ${provider} account instead.`);
+        console.log("Toast called");
         navigate(location.pathname, { replace: true });
-        }, 100)
       }
   
-    }, [error, provider]) //fix this bit later
+    }, [error, provider, navigate]) //updates each time the location changes
   return (
     <div
       className="flex min-h-screen"
@@ -78,8 +89,11 @@ function SignUp() {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Create your account
+                Welcome Back
               </CardTitle>
+              <CardDescription style={{ color: "var(--color-muted-foreground)" }}>
+                Sign in to your account to continue
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Social Login Buttons */}
@@ -115,11 +129,12 @@ function SignUp() {
                   variant="social"
                   className="w-full"
                   size="lg"
-                  onClick = {() => {handleSocialLogin('discord')}}
                   style={{ backgroundColor: "var(--color-lighter)", color: "var(--color-foreground)" }}
+                  onClick = {() => {handleSocialLogin("discord")}}
+                
                 >
                   <FaDiscord className="w-5 h-5 mr-2" />
-                  Continue with Discord
+                  Continue with Discrord
                 </Button>
               </div>
 
@@ -144,8 +159,8 @@ function SignUp() {
               {/* Email/Password Form */}
               <Form method = "POST" className="space-y-4">
                 <Input
-                  id="email"
-                  name="email"
+                name = "email"
+                  id = "email"
                   type="email"
                   placeholder="Enter your email"
                   className="h-12"
@@ -157,9 +172,8 @@ function SignUp() {
                   required
                 />
                 <Input
-
-                  id="password"
-                  name="password"
+                name = "password"
+                  id = "password"
                   type="password"
                   placeholder="Enter your password"
                   className="h-12"
@@ -169,12 +183,17 @@ function SignUp() {
                     borderColor: "var(--color-border)",
                   }}
                   required
+                  minLength={4}
+                  maxLength={20}
                 />
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input type="checkbox" style={{ accentColor: "var(--color-primary)" }} />
                     <span style={{ color: "var(--color-muted-foreground)" }}>Remember me</span>
                   </label>
+                  <a href="#" style={{ color: "var(--color-primary)" }}>
+                    Forgot password?
+                  </a>
                 </div>
                 <Button
                   type="submit"
@@ -182,17 +201,33 @@ function SignUp() {
                   className="w-full h-12 font-semibold"
                   style={{ backgroundColor: "var(--color-primary)", color: "var(--color-primary-foreground)" }}
                 >
-                  Sign Up
+                  Sign In
                 </Button>
               </Form>
 
               <div className="text-center text-sm" style={{ color: "var(--color-muted-foreground)" }}>
-                Already have an account? {" "}
-                <Link to = '/login' className = "underline" style={ {color : "var(--color-primary)"}}>
-                Log in
-
-                </Link>
+                Don't have an account?{" "}
+                <Link className = "underline"to = '/signup' style={{ color: "var(--color-primary)"}}>
+                Create your account 
+                </Link>               
               </div>
+              
+              {/* Test toast button */}
+              <Button
+                type="button"
+                onClick={() => {
+                  console.log("Test toast button clicked");
+                  try {
+                    toast.success("Test toast working!");
+                    console.log("Toast function called successfully");
+                  } catch (error) {
+                    console.error("Toast error:", error);
+                  }
+                }}
+                style={{ backgroundColor: "var(--color-primary)", color: "var(--color-primary-foreground)" }}
+              >
+                Test Toast
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -205,33 +240,36 @@ function SignUp() {
 }
 
 
-export async function signUpAction({request}) {
-    const data = await request.formData();
-    const signUpData = {
-        email : data.get('email'),
-        password : data.get('password'),
-    }
-    try {
-        const response = await apiClient.post('/auth/signup', signUpData);
-        const {message} = response.data;
-        console.log("Sign up successful:", message);
-        toast.success("Sign up successful", {description : message})
+export async function loginAction({request}){
+  const data = await request.formData();
+  const loginData = {
+    email : data.get('email'),
+    password: data.get('password'),
+  };
+  try{
+    const response = await apiClient.post('auth/login', loginData);
+    const {message , token, success} = response.data;
+    console.log("Login succesful:", message);
+    localStorage.setItem("token", token);
+    toast.success("Login successful", {description : message});
 
-        return redirect("/login");
-
-    }
-
-    catch (error) {
-        const message =
-          error.response?.data?.message ||
-          "Failed to signup. Please try again later";
-
-        toast.error("Signup failed", {description : message});
-        return {error : message}
-      }
+    //maybe we save the jwt token
+    //add some toast functionality the user is able to see
+    return redirect('/dashboard');
 
 
-    }
+  }
+  catch(error){
+  console.error("Login failed:", error);
 
+  const message =
+    error.response?.data?.message || // match your backend key
+    "Login failed. Please try again later.";
+  toast.error("Login failed", { description: message }); //fix this error later
 
-export default SignUp;
+  return {error : message}
+
+  }
+}
+
+export default Login;
