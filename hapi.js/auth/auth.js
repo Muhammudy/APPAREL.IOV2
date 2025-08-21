@@ -17,4 +17,14 @@ module.exports.registerOAuth = async function (server) {
         isSecure: false,
         scope : ['email', 'profile']
     });
+
+    server.auth.strategy('discord', 'bell', {
+        provider : 'discord',
+        password: process.env.DISCORD_PASSWORD,
+        clientId : process.env.DISCORD_CLIENT_ID,
+        clientSecret : process.env.DISCORD_CLIENT_SECRET,
+        isSecure : false,
+        scope: ['identify', 'email']
+
+    });
 }

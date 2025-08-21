@@ -2,6 +2,7 @@ const User = require('../models/Users');
 const Hapi = require('@hapi/hapi');
 const jwtToken = require('jsonwebtoken');
 const bCrypt = require('bcrypt');
+const { options } = require('joi');
 module.exports = [{
     method: ['GET', 'POST'],
     path: '/signup/oauth2/google',
@@ -31,7 +32,7 @@ module.exports = [{
                 user = await new User({
                     user: profile.displayName,
                     email: profile.email,
-                    oauthProvider: profile.provider,
+                    oauthProvider: 'google',
                     oauthID: profile.id,
                     password: null
                 }).save();
@@ -73,7 +74,7 @@ path: '/auth/signup',
 handler : async (request, reply) => {
     try { 
         //first we need to check if the user already exists
-        const {email, password} = request.payload;
+        const {email, password} = request.payload; //maybe add some validation here
         console.log("Received signup request:", request.payload);
         let user = await User.findOne({email : email});
         if(user) {
@@ -98,5 +99,100 @@ handler : async (request, reply) => {
 
     }
 }
+},
+{
+    method: ['GET', 'POST'],
+    path : '/signup/oauth2/discord',
+    options : {
+        auth: 'discord',
+        handler : async function (request, reply) {
+            console.log("WITHIN DISCORD PATH");
+            if(!request.auth.isAuthenticated){
+                console.error("Authentication failed:", request.auth.error?.message);
+                return reply.response({
+                    message: 'Authentication failed',
+                    error: request.auth.error?.message
+                }).code(401);
+
+            }
+            try{
+            console.log("hello!");
+            const credentials = request.auth.credentials;
+
+            // Raw object
+            console.log("=== Raw Credentials Object ===");
+            console.log(credentials);
+
+            // JSON-safe print (no circular refs)
+            console.log("=== JSON.stringify Credentials ===");
+            try {
+                console.log(JSON.stringify(credentials, null, 4));
+            } catch (err) {
+                console.error("Could not stringify credentials:", err.message);
+            }
+
+            // Show keys
+            console.log("=== Credentials Keys ===");
+            console.log(Object.keys(credentials));
+
+            // Check profile existence
+            if (credentials && credentials.profile) {
+                console.log("=== Profile Object ===");
+                console.log(credentials.profile);
+
+                console.log("Profile ID:", credentials.profile.id);
+                console.log("Profile Username:", credentials.profile.username);
+                console.log("Profile Email:", credentials.profile.email);
+            } else {
+                console.warn("⚠️ No profile object found in credentials");
+            }
+
+
+
+            const profile = credentials.profile;
+            console.log("Profile:", profile);
+            // Check if user exists
+            let user = await User.findOne({ oauthID: profile.id });
+            console.log(profile.email);
+
+            // Create new user if not found
+            if (!user) {
+                user = await new User({
+                    user: profile.username,
+                    email: profile.email,
+                    oauthProvider: 'discord',
+                    oauthID: profile.id,
+                    password: null
+                }).save();
+
+                console.log("New user created");
+            }
+
+            // JWT payload
+            const payload = {
+                id: user._id,
+                name: user.user,
+                email: user.email,
+                oauthProvider: user.oauthProvider,
+                oauthID: user.oauthID
+            };
+
+            const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+            console.log("User authenticated successfully");
+
+            return reply.redirect(`http://localhost:5173/oauth/callback?token=${token}`); //send back the token
+
+            }
+            catch (error){
+                console.error("Error during authentication:", error);
+                return reply.response({
+                    message: 'Authentication failed',
+                    error: error.message
+                }).code(500);
+            }
+
+            
+        },
+    }
 }
 ];

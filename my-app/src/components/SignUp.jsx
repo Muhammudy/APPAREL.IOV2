@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Github } from "lucide-react";
+import { FaDiscord } from "react-icons/fa";
 import { Form, Navigate } from "react-router-dom";
 import { redirect } from "react-router-dom";
 
@@ -22,8 +22,9 @@ const handleSocialLogin = (provider) => {
     if (provider === 'google') {
         oauthUrl = 'http://localhost:3000/login/oauth2/google';
     }
-    else if (provider === 'github') {
-        oauthUrl = 'http://localhost:3000/login/oauth2/github';
+    else if (provider === 'discord') {
+        console.log('in discord path');
+        oauthUrl = 'http://localhost:3000/login/oauth2/discord';
     }
     window.location.href = oauthUrl;
 
@@ -94,10 +95,11 @@ function SignUp() {
                   variant="social"
                   className="w-full"
                   size="lg"
+                  onClick = {() => {handleSocialLogin('discord')}}
                   style={{ backgroundColor: "var(--color-lighter)", color: "var(--color-foreground)" }}
                 >
-                  <Github className="w-5 h-5 mr-2" />
-                  Continue with GitHub
+                  <FaDiscord className="w-5 h-5 mr-2" />
+                  Continue with Discord
                 </Button>
               </div>
 
