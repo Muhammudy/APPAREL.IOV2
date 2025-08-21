@@ -116,4 +116,19 @@ module.exports = [{
 
 
 
-}]
+},
+{
+    method : ['GET', 'POST'],
+    path : '/login/oauth2/discord',
+    
+    handler: async function(request, reply){
+
+        
+    }
+
+
+
+}
+
+
+]

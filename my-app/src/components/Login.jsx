@@ -14,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import apiClient from "@/api/apiClient";
 
 import { toast } from "sonner";
+import { FaDiscord } from "react-icons/fa";
 
 
 const handleSocialLogin = (provider) => {
@@ -23,8 +24,8 @@ const handleSocialLogin = (provider) => {
     if (provider === 'google') {
         oauthUrl = 'http://localhost:3000/login/oauth2/google';
     }
-    else if (provider === 'github') {
-        oauthUrl = 'http://localhost:3000/login/oauth2/github';
+    else if (provider === 'discord') {
+        oauthUrl = 'http://localhost:3000/login/oauth2/discord';
     }
     window.location.href = oauthUrl;
 
@@ -99,9 +100,11 @@ function Login() {
                   className="w-full"
                   size="lg"
                   style={{ backgroundColor: "var(--color-lighter)", color: "var(--color-foreground)" }}
+                  onClick = {() => {handleSocialLogin("discord")}}
+                
                 >
-                  <Github className="w-5 h-5 mr-2" />
-                  Continue with GitHub
+                  <FaDiscord className="w-5 h-5 mr-2" />
+                  Continue with Discrord
                 </Button>
               </div>
 
