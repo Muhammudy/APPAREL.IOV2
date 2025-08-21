@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from "react-router-dom";
 import Login from './components/Login.jsx';
 import OAuthCallback from './components/OAuthCallback.jsx';
+import { Toaster } from './components/ui/sonner.jsx';
 // import Register from './components/Register.jsx'; 
 import './index.css'
 import App from './App.jsx'
@@ -18,6 +19,7 @@ const routerDefinitions = createBrowserRouter(
       <Route path="/login" element={<Login />} action = {loginAction}/>
       <Route path = "/oauth/callback" element = { <OAuthCallback/>} />
       <Route path = '/signup' element = { < SignUp/>} action = {signUpAction}/>
+      {/* <Route path = '/dashboard' element = { <Dashboard />} action = {dashboardAction} /> */}
 
     </>
   )
@@ -26,7 +28,20 @@ const routerDefinitions = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    
     <RouterProvider router = {routerDefinitions}/>
+    <Toaster
+      position="top-center"
+      toastOptions={{
+        classNames: {
+          error: "bg-red-600 text-white",
+          success: "bg-green-600 text-white",
+          warning: "bg-yellow-500 text-black",
+          info: "bg-blue-600 text-white",
+        },
+      }}
+    />
+
 
 
   </StrictMode>

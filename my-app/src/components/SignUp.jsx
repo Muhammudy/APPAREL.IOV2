@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import apiClient from "@/api/apiClient";
+import { toast } from "sonner";
 
 const handleSocialLogin = (provider) => {
 
@@ -192,7 +193,9 @@ export async function signUpAction({request}) {
         const response = await apiClient.post('/auth/signup', signUpData);
         const {message} = response.data;
         console.log("Sign up successful:", message);
-        //add a toast or a message here or some information to the user 
+        toast.success("Sign up successful", {description : message})
+
+        return redirect("/login");
 
     }
 
@@ -201,9 +204,8 @@ export async function signUpAction({request}) {
           error.response?.data?.message ||
           "Failed to signup. Please try again later";
 
-        throw new Response(JSON.stringify({ message }), {
-          status: error.response?.status || 500,
-        });
+        toast.error("Signup failed", {description : message});
+        return {error : message}
       }
 
 

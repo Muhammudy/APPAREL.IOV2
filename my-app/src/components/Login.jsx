@@ -5,12 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Github } from "lucide-react";
 import { Form } from "react-router-dom";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { redirect } from "react-router-dom";
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import apiClient from "@/api/apiClient";
+
+import { toast } from "sonner";
 
 
 const handleSocialLogin = (provider) => {
@@ -197,6 +200,8 @@ export async function loginAction({request}){
     const response = await apiClient.post('auth/login', loginData);
     const {message , token, success} = response.data;
     console.log("Login succesful:", message);
+    localStorage.setItem("token", token);
+    toast.success("Login successful", {description : message});
 
     //maybe we save the jwt token
     //add some toast functionality the user is able to see
@@ -205,17 +210,14 @@ export async function loginAction({request}){
 
   }
   catch(error){
-      console.error("Login failed:", error);
+  console.error("Login failed:", error);
 
-    if (error.response) {
-      // Backend responded with a non-2xx status
-      const { message } = error.response.data;
-    } 
+  const message =
+    error.response?.data?.message || // match your backend key
+    "Login failed. Please try again later.";
+  toast.error("Login failed", { description: message }); //fix this error later
 
-    // Stay on the login page
-    return null;
-  
-
+  return {error : message}
 
   }
 }

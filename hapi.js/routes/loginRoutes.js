@@ -71,6 +71,7 @@ module.exports = [{
     path : '/auth/login',
     handler : async function (request, reply){
         const {email, password} = request.payload; //maybe add some validation here
+        console.log("payload ", request.payload);
         if (!email || !password){
             return reply.response({message : "Email and Password are required", success : false}).code(400);
         }
@@ -79,6 +80,9 @@ module.exports = [{
             if (!user){
                 console.error("User not found");
                 return reply.response({message: "User not found", success: false}).code(404);
+            }
+            else if (!user.password && user.oauthID){ //if the user used oAuth2
+                return reply.response({message: "This account was created with OAuth2. Please log in using your provider.", success : false}).code(400)
             }
             else{ //check if the password matches
                 const isMatch = await bCrypt.compare(password, user.password);
