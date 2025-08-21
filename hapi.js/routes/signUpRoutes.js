@@ -25,7 +25,6 @@ module.exports = [{
 
             // Check if user exists
             let user = await User.findOne({ oauthID: profile.id });
-            console.log(profile.email);
 
             // Create new user if not found
             if (!user) {
@@ -40,7 +39,7 @@ module.exports = [{
                 console.log("New user created");
             }
 
-            // JWT payload
+            // JWT payload  
             const payload = {
                 id: user._id,
                 name: user.user,

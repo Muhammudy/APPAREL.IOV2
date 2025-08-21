@@ -20,11 +20,11 @@ const handleSocialLogin = (provider) => {
     let oauthUrl = '';
 
     if (provider === 'google') {
-        oauthUrl = 'http://localhost:3000/login/oauth2/google';
+        oauthUrl = 'http://localhost:3000/signup/oauth2/google';
     }
     else if (provider === 'discord') {
         console.log('in discord path');
-        oauthUrl = 'http://localhost:3000/login/oauth2/discord';
+        oauthUrl = 'http://localhost:3000/signup/oauth2/discord';
     }
     window.location.href = oauthUrl;
 
