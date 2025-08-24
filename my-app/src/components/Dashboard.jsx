@@ -1,11 +1,13 @@
 import React from "react";
+import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+import { AppSideBar } from "./AppSideBar";
 
 
 function Dashboard({}){
     return(
-        <h1>
-            Hello World 
-        </h1>
+        <>
+        <AppSideBar />
+        </>
     );
 
 
