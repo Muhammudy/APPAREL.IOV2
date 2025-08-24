@@ -31,10 +31,11 @@ module.exports = [{
             if (!user) {
                 user = await new User({
                     user: profile.displayName,
+                    profilePicture : profile.picture,
                     email: profile.email,
                     oauthProvider: 'google',
                     oauthID: profile.id,
-                    password: null
+                    password: null,
                 }).save();
 
                 console.log("New user created");
@@ -53,7 +54,8 @@ module.exports = [{
                     name: user.user,
                     email: user.email,
                     oauthProvider: user.oauthProvider,
-                    oauthID: user.oauthID
+                    oauthID: user.oauthID,
+                    profilePicture : user.profilePicture,
 
                 },
             };
@@ -94,6 +96,7 @@ handler : async (request, reply) => {
                 user : request.payload.email,
                 email: request.payload.email,
                 password : await bCrypt.hash(request.payload.password, 10),
+                profilePicture : null, 
 
             })
             await user.save();
@@ -142,7 +145,8 @@ handler : async (request, reply) => {
                     email: profile.email,
                     oauthProvider: 'discord',
                     oauthID: profile.id,
-                    password: null
+                    password: null,
+                    profilePicture : profile.avatar,
                 }).save();
 
                 console.log("New user created");
@@ -161,7 +165,8 @@ handler : async (request, reply) => {
                     name: user.user,
                     email: user.email,
                     oauthProvider: user.oauthProvider,
-                    oauthID: user.oauthID
+                    oauthID: user.oauthID,
+                    profilePicture : user.profilePicture,
 
                 },
             };

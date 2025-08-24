@@ -1,7 +1,11 @@
 
 import { createContext, useEffect, useContext, useReducer, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { toast } from 'sonner';
 
+
+import { useLocation } from "react-router";
+import { useNavigate } from "react-router";
 export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -14,6 +18,8 @@ const LOGOUT = "LOGOUT";
 const getUser = (token) => {
   try {
     const decoded = jwtDecode(token); 
+    console.log(decoded);
+    console.log(decoded.user);
     return decoded.user;              
   } catch (error) {
     console.error("Error decoding user from token", error);
@@ -22,13 +28,13 @@ const getUser = (token) => {
 };
 
 
+
 const authReducer = (prevState, action) => {
     switch(action.type){
         case LOGIN_SUCCESS : {
             return  {
                 ...prevState,
                 token: action.payload.token,
-                user: getUser(action.payload.token),
                 isAuthenticated : true,
 
             }
@@ -37,7 +43,6 @@ const authReducer = (prevState, action) => {
             return{
             ...prevState,
             token : null,
-            user : null, 
             isAuthenticated : false,
         }
         }
@@ -56,7 +61,6 @@ export const AuthProvider = ({children}) => {
       if (token && user) {
         return {
           token,
-          user: JSON.parse(user),
           isAuthenticated: true,
         };
       }
@@ -65,7 +69,6 @@ export const AuthProvider = ({children}) => {
     }
     return {
       token: null,
-      user: null,
       isAuthenticated: false,
     };
   })();
@@ -77,11 +80,10 @@ export const AuthProvider = ({children}) => {
     try{
         if (authState.isAuthenticated){
             localStorage.setItem("token", authState.token);
-            localStorage.setItem("user", JSON.stringify(getUser(authState.token)));
         }
         else{
+            console.log("removing");
             localStorage.removeItem("token");
-            localStorage.removeItem("user");
         }
     }
     catch(error){
@@ -103,7 +105,6 @@ export const AuthProvider = ({children}) => {
     <AuthContext.Provider
       value={{
         token: authState.token,
-        user: authState.user,
         isAuthenticated: authState.isAuthenticated,
         loginSuccess,
         logout,

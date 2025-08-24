@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
         required : true,
         unique : true,
     },
+    profilePicture : {
+        type: String,
+        unique: false,
+        required : false,
+    },
     oauthProvider : {
         type : String,
 

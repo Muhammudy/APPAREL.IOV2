@@ -38,23 +38,11 @@ const routerDefinitions = createBrowserRouter(
 
 
 function Root({}){
-  const [defaultOpen, setDefaultOpen] = useState(false);
-
-  useEffect(() => {
-    const cookieValue = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("sidebar_state="))
-      ?.split("=")[1];
-
-    setDefaultOpen(cookieValue === "true");
-  }, []);
 
   return(
-      <AuthProvider>
-      <SidebarProvider defaultOpen = {defaultOpen}>
-        
-        <AppSidebar />
-        <SidebarTrigger />
+
+        <>
+        <AuthProvider>
 
         <RouterProvider router={routerDefinitions} />
         <Toaster
@@ -62,8 +50,12 @@ function Root({}){
           expand={true}
           richColors
         />
-      </SidebarProvider>
-    </AuthProvider>
+        </AuthProvider>
+        
+        </>
+
+
+
 
   );
 

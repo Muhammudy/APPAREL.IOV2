@@ -25,6 +25,7 @@ module.exports = [{
 
             // Check if user exists
             let user = await User.findOne({ email : profile.email });
+            console.log(profile?.picture);
 
             // Create new user if not found
             if (!user) {
@@ -33,7 +34,8 @@ module.exports = [{
                     email: profile.email,
                     oauthProvider: 'google',
                     oauthID: profile.id,
-                    password: null
+                    password: null,
+                    profilePicture : profile.picture,
                 }).save();
 
                 console.log("New user created");
@@ -52,7 +54,8 @@ module.exports = [{
                     name: user.user,
                     email: user.email,
                     oauthProvider: user.oauthProvider,
-                    oauthID: user.oauthID
+                    oauthID: user.oauthID,
+                    profilePicture: user.profilePicture,
 
                 },
             };
@@ -106,7 +109,8 @@ module.exports = [{
                             name: user.user,
                             email: user.email,
                             oauthProvider: user.oauthProvider,
-                            oauthID: user.oauthID
+                            oauthID: user.oauthID,
+                            profilePicture : user.profilePicture,
 
                         },
                     };
@@ -161,7 +165,8 @@ module.exports = [{
                     email: profile.email,
                     oauthProvider: 'discord',
                     oauthID: profile.id,
-                    password: null
+                    password: null,
+                    profilePicture: profile.avatar,
                 }).save();
 
                 console.log("New user created");
@@ -180,7 +185,8 @@ module.exports = [{
                     name: user.user,
                     email: user.email,
                     oauthProvider: user.oauthProvider,
-                    oauthID: user.oauthID
+                    oauthID: user.oauthID,
+                    profilePicture: user.profilePicture,
 
                 },
             };
