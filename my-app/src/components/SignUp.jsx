@@ -216,7 +216,6 @@ export async function signUpAction({request}) {
         const {message} = response.data;
         console.log("Sign up successful:", message);
         toast.success("Sign up successful", {description : message})
-
         return redirect("/login");
 
     }

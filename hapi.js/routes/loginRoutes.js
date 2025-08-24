@@ -47,11 +47,14 @@ module.exports = [{
 
             // JWT payload  
             const payload = {
-                id: user._id,
-                name: user.user,
-                email: user.email,
-                oauthProvider: user.oauthProvider,
-                oauthID: user.oauthID
+                user: {
+                    id: user._id,
+                    name: user.user,
+                    email: user.email,
+                    oauthProvider: user.oauthProvider,
+                    oauthID: user.oauthID
+
+                },
             };
 
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -98,12 +101,15 @@ module.exports = [{
                 else{
                     console.log("User authenticated successfully");
                     const payload = {
+                        user: {
                             id: user._id,
                             name: user.user,
                             email: user.email,
                             oauthProvider: user.oauthProvider,
                             oauthID: user.oauthID
-                        };
+
+                        },
+                    };
                     const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
                     console.log("User authenticated successfully");
                     return reply.response({message : "User authenticated successfully", success: true, token}).code(200);
@@ -169,11 +175,14 @@ module.exports = [{
 
             // JWT payload
             const payload = {
-                id: user._id,
-                name: user.user,
-                email: user.email,
-                oauthProvider: user.oauthProvider,
-                oauthID: user.oauthID
+                user: {
+                    id: user._id,
+                    name: user.user,
+                    email: user.email,
+                    oauthProvider: user.oauthProvider,
+                    oauthID: user.oauthID
+
+                },
             };
 
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });

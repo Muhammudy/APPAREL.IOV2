@@ -11,6 +11,8 @@ import SignUp from './components/SignUp.jsx';
 import { signUpAction } from './components/SignUp.jsx';
 import { loginAction } from './components/Login.jsx';
 import ToastTest from './components/ToastTest.jsx';
+import { AuthContext } from './components/Context/AuthContext.jsx';
+import { AuthProvider } from './components/Context/AuthContext.jsx';
 
 
 const routerDefinitions = createBrowserRouter(
@@ -29,13 +31,15 @@ const routerDefinitions = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    
+    <AuthProvider>
+
     <RouterProvider router = {routerDefinitions}/>
     <Toaster
       position="top-center"
       expand={true}
       richColors
     />
+    </AuthProvider>
 
 
 

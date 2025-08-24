@@ -14,6 +14,9 @@ import apiClient from "@/api/apiClient";
 
 import { toast } from "sonner";
 import { FaDiscord } from "react-icons/fa";
+import { useAuth } from "./Context/AuthContext";
+import { useActionData } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 
 const handleSocialLogin = (provider) => {
@@ -33,14 +36,30 @@ const handleSocialLogin = (provider) => {
 
 
 function Login() {
+    const {loginSuccess} = useAuth();
+    const actionData = useActionData();
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search); //gives the query information from the location variable
     const error = queryParams.get('error');
     const provider = queryParams.get('provider');
+
+    useEffect(() =>{ //regular sign in
+      if (actionData?.success){
+        const payload = jwtDecode(actionData?.token);
+        loginSuccess(payload?.user, actionData?.token );
+        toast.success(`${actionData?.message}`);
+        navigate("/dashboard");
+      }
+      else if (actionData?.error){
+        toast.error(actionData.error.message || "Login failed");
+
+      }
+
+    }, [actionData]);
     
 
-    useEffect(() => {
+    useEffect(() => { //oAuth2 
       console.log("in the use efffect");
       console.log("error", error);
       console.log("provider", provider);
@@ -50,9 +69,6 @@ function Login() {
         toast.error(`An account with this email already exists. Please sign in using your ${provider} account instead.`);
         navigate(location.pathname, { replace: true });
         }, 100)
-      }
-      else{
-        toast.success("working");
       }
   
     }, [error, queryParams]) //fix this bit later
@@ -224,14 +240,10 @@ export async function loginAction({request}){
   };
   try{
     const response = await apiClient.post('auth/login', loginData);
-    const {message , token, success} = response.data;
-    console.log("Login succesful:", message);
-    localStorage.setItem("token", token);
-    toast.success("Login successful", {description : message});
+    const {token, success, message} = response.data;
+    return {token, success, message};
 
-    //maybe we save the jwt token
-    //add some toast functionality the user is able to see
-    return redirect('/dashboard');
+    //return redirect('/dashboard');
 
 
   }
@@ -243,7 +255,7 @@ export async function loginAction({request}){
     "Login failed. Please try again later.";
   toast.error("Login failed", { description: message }); //fix this error later
 
-  return {error : message}
+  return {error : message, success : false}
 
   }
 }

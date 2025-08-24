@@ -48,11 +48,14 @@ module.exports = [{
 
             // JWT payload  
             const payload = {
-                id: user._id,
-                name: user.user,
-                email: user.email,
-                oauthProvider: user.oauthProvider,
-                oauthID: user.oauthID
+                user: {
+                    id: user._id,
+                    name: user.user,
+                    email: user.email,
+                    oauthProvider: user.oauthProvider,
+                    oauthID: user.oauthID
+
+                },
             };
 
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -153,11 +156,14 @@ handler : async (request, reply) => {
 
             // JWT payload
             const payload = {
-                id: user._id,
-                name: user.user,
-                email: user.email,
-                oauthProvider: user.oauthProvider,
-                oauthID: user.oauthID
+                user: {
+                    id: user._id,
+                    name: user.user,
+                    email: user.email,
+                    oauthProvider: user.oauthProvider,
+                    oauthID: user.oauthID
+
+                },
             };
 
             const token = jwtToken.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
