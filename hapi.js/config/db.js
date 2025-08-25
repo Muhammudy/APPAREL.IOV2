@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/Users'); // Import the User model
+const Inventory = require('../models/Inventory');
 
 const connectDB = async () => {
 	try{
@@ -10,6 +11,7 @@ const connectDB = async () => {
 			serverSelectionTimeoutMS: 5000,
 		});
 		await User.init();
+		await Inventory.init();
 		console.log("Connected to MongoDB successfully");
 	}
 

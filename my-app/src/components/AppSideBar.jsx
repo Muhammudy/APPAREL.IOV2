@@ -54,6 +54,7 @@ import { useEffect } from "react"
 import { useAuth } from "./Context/AuthContext"
 import { jwtDecode } from "jwt-decode"
 import { useNavigate } from "react-router"
+import { Link } from "react-router"
 
 const decodeJwt = () => {
   try {
@@ -133,22 +134,22 @@ export function AppSideBar() {
                     <SidebarMenuSub className="ml-6 mt-2">
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild>
-                          <a 
-                            href="#dashboard" 
+                          <Link
+                            to="/app/dashboard" 
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/60 transition-all duration-300 hover:translate-x-1 group"
                           >
                             <BarChart3 className="w-4 h-4 text-primary/70 group-hover:text-primary transition-colors duration-300" />
                             <span className="text-sm">Dashboard</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                           <SidebarMenuSubButton asChild>
-                          <a 
-                            href="#analytics" 
+                          <Link 
+                            to="/app/analytics" 
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/60 transition-all duration-300 hover:translate-x-1 group"
                           >
                             <BarChart3 className="w-4 h-4 text-primary/70 group-hover:text-primary transition-colors duration-300" />
                             <span className="text-sm">Analytics</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -173,35 +174,35 @@ export function AppSideBar() {
                     <SidebarMenuSub className="ml-6 mt-2 space-y-1">
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild>
-                          <a 
-                            href="#private" 
+                          <Link 
+                            to="/app/private" 
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/60 transition-all duration-300 hover:translate-x-1 group"
                           >
                             <Lock className="w-4 h-4 text-primary/70 group-hover:text-primary transition-colors duration-300" />
                             <span className="text-sm">Private</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild>
-                          <a 
-                            href="#public" 
+                          <Link 
+                            to="/app/public" 
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/60 transition-all duration-300 hover:translate-x-1 group"
                           >
                             <Globe className="w-4 h-4 text-primary/70 group-hover:text-primary transition-colors duration-300" />
                             <span className="text-sm">Public</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild>
-                          <a 
-                            href="#my-inventory" 
+                          <Link 
+                            to="/app/my-inventory" 
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/60 transition-all duration-300 hover:translate-x-1 group"
                           >
                             <Box className="w-4 h-4 text-primary/70 group-hover:text-primary transition-colors duration-300" />
                             <span className="text-sm">My Inventory</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -212,39 +213,39 @@ export function AppSideBar() {
               {/* Calendar */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Calendar">
-                  <a 
-                    href="#" 
+                  <Link 
+                    to="/app/calender" 
                     className={`group hover:bg-sidebar-accent/80 transition-all duration-300 hover:scale-[1.02] rounded-xl flex items-center gap-3 w-full ${state === "collapsed" ? "p-3 justify-center h-12" : "p-3 h-12"}`}
                   >
                     <Calendar className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-300" />
                     {state === "expanded" && <span className="font-medium">Calendar</span>}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               {/* Search */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Search">
-                  <a 
-                    href="#" 
+                  <Link 
+                    to = "/app/search" 
                     className={`group hover:bg-sidebar-accent/80 transition-all duration-300 hover:scale-[1.02] rounded-xl flex items-center gap-3 w-full ${state === "collapsed" ? "p-3 justify-center h-12" : "p-3 h-12"}`}
                   >
                     <Search className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-300" />
                     {state === "expanded" && <span className="font-medium">Search</span>}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               {/* Settings */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Settings">
-                  <a 
-                    href="#" 
+                  <Link 
+                    to = '/app/settings' 
                     className={`group hover:bg-sidebar-accent/80 transition-all duration-300 hover:scale-[1.02] rounded-xl flex items-center gap-3 w-full ${state === "collapsed" ? "p-3 justify-center h-12" : "p-3 h-12"}`}
                   >
                     <Settings className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-300" />
                     {state === "expanded" && <span className="font-medium">Settings</span>}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

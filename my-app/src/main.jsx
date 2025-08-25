@@ -21,20 +21,26 @@ import { useState } from 'react';
 
 import { AppSidebar } from './components/ui/appsidebar.jsx';
 
-
+import Shell from './components/Shell.jsx';
 
 const routerDefinitions = createBrowserRouter(
   createRoutesFromElements(
     <>
+      {/* Public routes */}
       <Route path="/" element={<App />} />
-      <Route path="/login" element={<Login />} action = {loginAction}/>
-      <Route path = "/oauth/callback" element = { <OAuthCallback/>} />
-      <Route path = '/signup' element = { < SignUp/>} action = {signUpAction}/>
-      <Route path = '/dashboard' element = { <Dashboard />} />
+      <Route path="/login" element={<Login />} action={loginAction} />
+      <Route path="/oauth/callback" element={<OAuthCallback />} />
+      <Route path="/signup" element={<SignUp />} action={signUpAction} />
 
+      {/* Protected layout with Shell */}
+      <Route path="/app" element={<Shell />}>
+        <Route path="dashboard" element={<Dashboard />} />
+        {/* <Route path="analytics" element={<Analytics />} /> */}
+      </Route>
     </>
   )
 );
+
 
 
 function Root({}){
