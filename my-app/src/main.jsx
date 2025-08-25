@@ -23,6 +23,7 @@ import { AppSidebar } from './components/ui/appsidebar.jsx';
 
 import Shell from './components/Shell.jsx';
 import Inventory from './components/Inventory.jsx';
+import { inventoryLoader } from './components/InventoryTable.jsx';
 
 const routerDefinitions = createBrowserRouter(
   createRoutesFromElements(
@@ -36,7 +37,7 @@ const routerDefinitions = createBrowserRouter(
       {/* Protected layout with Shell */}
       <Route path="/app" element={<Shell />}>
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path = "my-inventory" element = {<Inventory />}/>
+        <Route path = "my-inventory" element = {<Inventory />} loader = {inventoryLoader}/>
         {/* <Route path="analytics" element={<Analytics />} /> */}
       </Route>
     </>

@@ -13,12 +13,14 @@ import { Button } from "./ui/button";
 import InventoryHeader from "./InventoryHeader";
 import AddInventory from "./AddInventory";
 import InventoryTable from "./InventoryTable";
+import { useLoaderData } from "react-router";
 function Inventory() {
+  const inventoryData = useLoaderData();
   return (
     <>
     <InventoryHeader />
     <AddInventory />
-    <InventoryTable />
+    <InventoryTable data = {inventoryData}/>
 
     
     </>
